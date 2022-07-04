@@ -27,3 +27,8 @@ class TokenPayload(BaseModel):
 
 class EmailRequest(BaseModel):
     username: EmailStr
+
+
+class ResetPassword(BaseModel):
+    new_password: str
+    confirm_password: str

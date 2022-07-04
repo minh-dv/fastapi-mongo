@@ -14,6 +14,18 @@ async def get_user_by_username(username: str) -> User:
         raise err
 
 
+async def update_user(username: str, reset_code: str) -> User:
+    try:
+        user = await User.find_one(User.username == username)
+        update_query = {"$set": {
+            "reset_code": reset_code
+        }}
+        await user.update(update_query)
+        return user
+    except Exception as err:
+        raise err
+
+
 async def get_user_by_user_id(user_id: UUID) -> Optional[User]:
     try:
         user = await User.find_one(User.user_id == user_id)
@@ -49,4 +61,35 @@ async def authenticate(user_auth: UserAuth) -> Optional[User]:
     except Exception as err:
         raise err
 
+
+async def get_user_by_reset_token(reset_token: str) -> User:
+    try:
+        user = await User.find_one(User.reset_code == reset_token)
+        return user
+    except Exception as err:
+        raise err
+
+
+async def reset_password(new_hash_password: str, username: str):
+    try:
+        user = await User.find_one(User.username == username)
+        update_query = {"$set": {
+            "password": new_hash_password
+        }}
+        await user.update(update_query)
+        return user
+    except Exception as err:
+        raise err
+
+
+async def disable_reset_code(reset_password_token: str, username: str):
+    try:
+        user = await User.find_one(User.username == username)
+        update_query = {"$set": {
+            "reset_code": None
+        }}
+        await user.update(update_query)
+        return user
+    except Exception as err:
+        raise err
 
